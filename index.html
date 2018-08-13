@@ -1,0 +1,211 @@
+<!doctype html>
+<!-- This is just a very slightly modified tracking.js demo: https://trackingjs.com/examples/face_camera.html -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
+  <link rel="stylesheet" type="text/css" href="main.css" media="all">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/tracking-min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/data/face-min.js"></script>
+  <style>
+    .hidden {
+      visibility: hidden;
+    }
+    video, canvas {
+      margin-left: -160px;
+      margin-top: 120px;
+      position: absolute;
+    }
+
+    video.gone, canvas.gone {
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+  <header class="tc ph4">
+    <h1 class="helvetica f3 f2-m f1-l fw3 black-90 mv3">
+      <span id="focus" class="red">FOCUS</span><span class="blink">_</span><span id="concentrate" class="red">CONCENTRATE</span>
+    </h1>
+    <h2 class="helvetica f5 f4-m f3-l fw2 black-50 mt0 lh-copy">
+      Lean in. Get close. Stay still when the text turns green.
+    </h2>
+  </header>
+  <div class="dt-ns dt--fixed-ns">
+    <div class="dtc-ns tc pv4 bg-white">
+      <div class="video-container">
+        <video id="video" width="320" height="240" preload autoplay loop muted></video>
+        <canvas id="canvas" width="320" height="240"></canvas>
+      </div>
+      <div class="overlay">
+        <p id="text_container" class="tc helvetica f3 f2-m f1-l fw7 black-90">READY?</p>
+      </div>
+    </div>
+  </div>
+
+  <img id="foca" src="seal.gif" class="hidden"/>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+  <script src="clippy.min.js"></script>
+
+  <script type="text/javascript">
+    toastr.options = {
+      "closeButton": false,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+
+    const text_container = document.getElementById("text_container");
+    const focus_container = document.getElementById("focus");
+    const concentrate_container = document.getElementById("concentrate");
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const seal = document.getElementById('foca');
+    const context = canvas.getContext('2d');
+
+    const text = [
+      "FOCUS",
+      "THE WAY A PHOTOGRAPHER ADJUSTS A LENS",
+      "THE WAY STEAM CLEARS FROM A MIRROR",
+      "THE WAY TERROR KEEPS YOU STILL IN THE DARK",
+      "AND YOU'LL BE ABLE TO UNDERSTAND MORE",
+      "BY SIMPLY PARTICIPATING.",
+      "CONCENTRATE",
+      "THE WAY A TREE ASKS FOR THE SKY",
+      "THE WAY A RIVER SCRATCHES THE EARTH",
+      "THE WAY THE SUN BRUSHES IN ROUGH STROKES",
+      "AND YOU'LL BE ABLE TO DO MORE",
+      "BY SIMPLY WAITING.",
+      "AND NOW SOME BAD NEWS",
+      "BECAUSE THE REAL NEWS IS TOO REAL:",
+      "SCIENTISTS FORGOT ABOUT AN ENDANGERED ELEPHANT;",
+      "BIG BROTHER HARVESTED CHILDREN;",
+      "THE WORLD DROVE OVER SMALL FORESTS;",
+      "SOME CELEBRITY INCUBATED A FLUFFY BABY.",
+      "WE HAVE MADE WRITING EASIER",
+      "AND READING HARDER."
+    ]
+
+    window.onload = function() {
+      let tracker = new tracking.ObjectTracker('face');
+      let prevTime = 0;
+      let currTime = 0;
+      let i = 0;
+      let looking = false;
+
+      tracker.setInitialScale(4);
+      tracker.setStepSize(2);
+      tracker.setEdgesDensity(0.1);
+      tracking.track('#video', tracker, { camera: true });
+      tracker.on('track', function(event) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        if (event.data.length > 0) {
+          looking = true;
+          currTime = new Date().getTime();
+          if (prevTime == 0) {
+            prevTime == currTime;
+          }
+          if (currTime - prevTime >= 3700 && i < text.length) {
+            prevTime = currTime;
+            next_text = text[i];
+            if (i == 0) {
+              video.classList.add("gone");
+              canvas.classList.add("gone");
+              focus_container.classList.remove("red");
+              concentrate_container.classList.remove("red");
+              focus_container.classList.add("green");
+              concentrate_container.classList.add("green");
+            }
+            if (i == 5) {
+              setTimeout(function() {
+                if (looking)
+                  toastr.info('hey!!');
+              }, 1000);
+
+              setTimeout(function() {
+                if (looking)
+                  toastr.info('r u busy right now?');
+              }, 3000);
+
+              setTimeout(function() {
+                if (looking)
+                  toastr.info('what r u reading these days??');
+              }, 4000);
+
+              setTimeout(function() {
+                if (looking && i >= 4)
+                  toastr.error('😡 why are you ignoring me!!');
+              }, 10700);
+            }
+            if (i == 10) {
+              clippy.load('Clippy', function(agent) {
+                agent.show();
+                for (let i = 0; i < 4; i++) {
+                  if (looking)
+                    agent.play("Wave");
+                }
+                if (looking)
+                  agent.speak("It looks like you're trying to pay attention to something!");
+
+                let x = 0;
+                for (let i = 0; i < 4; i++) {
+                  if (looking)
+                    agent.play("GetAttention");
+                }
+                setTimeout(function() {
+                  agent.hide();
+                }, 25000);
+
+              });
+            }
+            if (i == 18) {
+              seal.classList.remove("hidden");
+              setTimeout(function() {
+                if (looking)
+                  toastr.info('did u get my seal');
+              }, 1000);
+            }
+            text_container.innerHTML = next_text;
+            i++;
+          }
+        } else {
+          i = 0;
+          looking = false;
+          video.classList.remove("gone");
+          canvas.classList.remove("gone");
+          focus_container.classList.remove("green");
+          concentrate_container.classList.remove("green");
+          seal.classList.add("hidden");
+          focus_container.classList.add("red");
+          concentrate_container.classList.add("red");
+          text_container.innerHTML = "READY?";
+        }
+
+        event.data.forEach(function(rect) {
+          looking = true;
+          context.strokeStyle = '#a64ceb';
+          context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+          context.font = '11px Helvetica';
+          context.fillStyle = "#fff";
+          context.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
+          context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+        });
+      });
+    };
+  </script>
+</body>
+</html>

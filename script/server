@@ -1,0 +1,4 @@
+#!/bin/sh
+
+set -e
+ruby -run -e httpd . -p 8000
