@@ -21,9 +21,37 @@
     video.gone, canvas.gone {
       visibility: hidden;
     }
+
+    .image-holder {
+      height: 40px;
+      width: 40px;
+      position: absolute;
+      float: right;
+      right: 0;
+    }
+
+    div.image-holder img.after {
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.5s linear;
+      position: absolute;
+      float: right;
+      top: 0;
+      right: 0;
+    }
+    div.image-holder:hover  img.after {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
+  <div class="image-holder">
+    <a href="https://www.gjtorikian.com/">
+      <img class="before" src="https://www.gjtorikian.com/assets/images/symbol_opacity_small.png" />
+      <img class="after" src="https://www.gjtorikian.com/assets/images/symbol_small.png" />
+    </a>
+  </div>
   <header class="tc ph4">
     <h1 class="helvetica f3 f2-m f1-l fw3 black-90 mv3">
       <span id="focus" class="red">FOCUS</span><span class="blink">_</span><span id="concentrate" class="red">CONCENTRATE</span>
